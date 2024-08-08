@@ -3,7 +3,7 @@ const axios = require('axios');
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
 const path = require('path');
-const { createCanvas, loadImage } = require('canvas');
+const { createCanvas, loadImage, registerFont } = require('canvas');
 const fs = require('fs');
 
 const app = express();
@@ -13,6 +13,8 @@ let cachedData = [];
 app.use(express.static('public'));  // Servire la pagina HTML e lo script JS
 
 // Funzione per generare un'immagine 640x640 con il nome del gruppo
+registerFont(path.join(__dirname, 'public/fonts/NotoColorEmoji-Regular.ttf'), { family: 'Noto Color Emoji' });
+
 function generateImageWithText(text, outputPath) {
     const width = 640;  // Larghezza dell'immagine
     const height = 640;  // Altezza dell'immagine
@@ -24,7 +26,7 @@ function generateImageWithText(text, outputPath) {
     ctx.fillRect(0, 0, width, height);
 
     // Testo centrato
-    ctx.font = 'bold 50px "Segoe UI Emoji"'; 
+    ctx.font = 'bold 50px "Noto Color Emoji"'; 
     ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
