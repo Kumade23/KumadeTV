@@ -135,9 +135,9 @@ app.post('/playlist', async (req, res) => {
         await browser.close();
 
         cachedData = {
-            "name": "DAZN X",
+            "name": "Kumade TV",
             "author": "@Kumade23",
-            "image": "http://telegra.ph/file/445fc5e7aac0f1e0fa03d.jpg",
+            "image": "https://telegra.ph/file/033790d0e590f180ed10e.png",
             "info": "",
             "groups": groups
         };
