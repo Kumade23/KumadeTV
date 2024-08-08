@@ -42,7 +42,7 @@ function generateImageWithText(text, outputPath) {
 }
 
 // Endpoint per restituire i dati
-app.get('/api/scrape', (req, res) => {
+app.get('/playlist', (req, res) => {
     res.json(cachedData);
 });
 
