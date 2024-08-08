@@ -3,7 +3,7 @@ document.getElementById('scrapeButton').addEventListener('click', async () => {
     statusMessage.textContent = 'Esecuzione in corso...';
 
     try {
-        const response = await fetch('/api/scrape', { method: 'POST' });
+        const response = await fetch('/playlist', { method: 'POST' });
         if (response.ok) {
             statusMessage.textContent = 'Dati aggiornati con successo!';
         } else {
