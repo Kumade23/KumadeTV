@@ -24,7 +24,7 @@ function generateImageWithText(text, outputPath) {
     ctx.fillRect(0, 0, width, height);
 
     // Testo centrato
-    ctx.font = 'bold 50px Arial';
+    ctx.font = 'bold 50px "Segoe UI Emoji"'; 
     ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
