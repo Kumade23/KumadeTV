@@ -25,11 +25,34 @@ function generateImageWithText(text, outputPath) {
     ctx.fillStyle = '#333';
     ctx.fillRect(0, 0, width, height);
 
-    // Testo centrato
-    ctx.font = 'bold 50px "Noto Color Emoji"'; 
+   function calculateFontSize(text, maxWidth, maxHeight) {
+        let fontSize = 50;  // Dimensione iniziale del font
+        let textWidth, textHeight;
+        ctx.font = `bold ${fontSize}px "Noto Color Emoji"`;
+
+        do {
+            // Calcola le dimensioni del testo
+            const metrics = ctx.measureText(text);
+            textWidth = metrics.width;
+            textHeight = fontSize * 1.2; // Approximate height
+            fontSize -= 1;  // Riduci la dimensione del font
+
+            ctx.font = `bold ${fontSize}px "Noto Color Emoji"`;
+        } while ((textWidth > maxWidth || textHeight > maxHeight) && fontSize > 0);
+
+        return fontSize;
+    }
+
+    // Calcola la dimensione del font
+    const fontSize = calculateFontSize(text, width * 0.9, height * 0.9);
+
+    // Imposta il font e il colore
+    ctx.font = `bold ${fontSize}px "Noto Color Emoji"`;
     ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+
+    // Disegna il testo
     ctx.fillText(text, width / 2, height / 2);
 
     const buffer = canvas.toBuffer('image/png');
