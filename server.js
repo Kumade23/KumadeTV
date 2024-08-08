@@ -47,7 +47,7 @@ app.get('/playlist', (req, res) => {
 });
 
 // Endpoint per aggiornare i dati con una richiesta POST
-app.post('/api/scrape', async (req, res) => {
+app.post('/playlist', async (req, res) => {
     try {
         const response = await axios.get('https://sub7goal.live/');
         const htmlContent = response.data;
