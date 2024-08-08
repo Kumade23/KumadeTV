@@ -100,7 +100,7 @@ app.post('/api/scrape', async (req, res) => {
                     generateImageWithText(groupName, imagePath);
                     groups.push({
                         "name": groupName,
-                        "image": `http://localhost:3000/images/group_${index}.png`,
+                        "image": `https://kumadetv.onrender.com/images/group_${index}.png`,
                         "stations": stations
                     });
                 }
@@ -113,7 +113,7 @@ app.post('/api/scrape', async (req, res) => {
             "name": "DAZN X",
             "author": "@Kumade23",
             "image": "http://telegra.ph/file/445fc5e7aac0f1e0fa03d.jpg",
-            "info": "EVENTI DEL GIORNO",
+            "info": "",
             "groups": groups
         };
 
