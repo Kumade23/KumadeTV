@@ -1,9 +1,8 @@
 const express = require('express');
 const axios = require('axios');
-const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
 const path = require('path');
-const { createCanvas, loadImage, registerFont } = require('canvas');
+const { createCanvas, registerFont } = require('canvas');
 const fs = require('fs');
 const session = require('express-session');
 
@@ -101,75 +100,79 @@ app.get('/playlist', (req, res) => {
     res.json(cachedData);
 });
 
+// Endpoint per restituire il JSON statico
+app.get('/url', (req, res) => {
+    const staticData = {
+        "name": "Kumade TV",
+        "author": "@Kumade23",
+        "image": "https://telegra.ph/file/033790d0e590f180ed10e.png",
+        "info": "",
+        "telegram": "t.me/Kumade23",
+        "url": "",
+        "groups": [
+            {
+                "name": "ENTRA",
+                "image": "https://telegra.ph/file/033790d0e590f180ed10e.png",
+                "info": "ENTER",
+                "url": "https://kumadetv.onrender.com/playlist",
+                "import": false
+            }
+        ]
+    };
+
+    res.json(staticData);
+});
+
 // Endpoint per aggiornare i dati tramite scraping
 app.post('/playlist', async (req, res) => {
     try {
-        const response = await axios.get('https://sub7goal.live/');
+        const response = await axios.get('https://calcio.run/streaming-gratis-calcio-1.php');
         const htmlContent = response.data;
         const $ = cheerio.load(htmlContent);
-        const link = $('a[href^="https://anonpaste.pw/v/"]').attr('href');
+        const groups = {};
 
-        if (!link) {
-            return res.status(404).json({ error: 'Link non trovato' });
-        }
+        $('li').each((i, element) => {
+            const titleElement = $(element).find('.kode_ticket_text h6');
+            const event1Element = $(element).find('.ticket_title h2').first();
+            const event2Element = $(element).find('.ticket_title h2').last();
+            const timeElement = $(element).find('.kode_ticket_text p');
+            const linkElement = $(element).find('.ticket_btn a');
 
-        const browser = await puppeteer.launch({ headless: true });
-        const page = await browser.newPage();
-        await page.goto(link, { waitUntil: 'networkidle2' });
-        await page.waitForSelector('body');
+            const title = titleElement.length ? titleElement.text().trim() : null;
+            const event1 = event1Element.length ? event1Element.text().trim() : null;
+            const event2 = event2Element.length ? event2Element.text().trim() : null;
+            const time = timeElement.length ? timeElement.text().trim() : null;
+            const link = linkElement.length ? linkElement.attr('href').trim() : null;
 
-        const paragraphs = await page.evaluate(() => {
-            return Array.from(document.querySelectorAll('p')).map(p => p.textContent);
-        });
+            if (title && event1 && event2 && time && link) {
+                if (!groups[title]) {
+                    groups[title] = {
+                        name: title,
+                        image: `https://kumadetv.onrender.com/images/group_${i}.png`,
+                        stations: []
+                    };
+                }
 
-        let content = paragraphs.join('\n');
-        const sections = content.split(/\n\s*\n/);
-
-        let groups = [];
-
-        sections.forEach((section, index) => {
-            const lines = section.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-
-            if (lines.length >= 3) {
-                const groupName = lines[0];
-                const time = lines[1];
-
-                const stations = [];
-
-                lines.slice(2).forEach(linkLine => {
-                    if (linkLine.startsWith('1: ')) {
-                        const url = linkLine.split(' ')[1];
-                        const languageMatch = linkLine.match(/\((.*?)\)/);
-                        const language = languageMatch ? languageMatch[0] : '';
-                        stations.push({
-                            "name": `${groupName} (${time}) - ${language}`,
-                            "url": url,
-                            "isHost": "true"
-                        });
-                    }
+                groups[title].stations.push({
+                    name: `${event1} - ${event2} - ${time}`,
+                    url: link,
+                    isHost: "true"
                 });
 
-                if (stations.length > 0) {
-                    const imagePath = `./public/images/group_${index}.png`;
-                    generateImageWithText(groupName, imagePath);
-                    groups.push({
-                        "name": groupName,
-                        "image": `https://kumadetv.onrender.com/images/group_${index}.png`,
-                        "stations": stations
-                    });
-                }
+                const imagePath = `./public/images/group_${i}.png`;
+                generateImageWithText(title, imagePath);
             }
         });
 
-        await browser.close();
-
-        cachedData = {
-            "name": "Kumade TV",
-            "author": "@Kumade23",
-            "image": "https://telegra.ph/file/033790d0e590f180ed10e.png",
-            "info": "",
-            "groups": groups
+        const result = {
+            name: "Kumade TV",
+            author: "@Kumade23",
+            image: "https://telegra.ph/file/033790d0e590f180ed10e.png",
+            info: "",
+            groups: Object.values(groups)
         };
+
+        cachedData = result;
 
         res.status(200).json({ success: true });
     } catch (error) {
