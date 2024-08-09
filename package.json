@@ -10,6 +10,7 @@
     "axios": "^0.21.1",
     "puppeteer": "^10.0.0",
     "cheerio": "^1.0.0-rc.3",
-    "canvas": "^2.11.2"
+    "canvas": "^2.11.2",
+    "express-session": "^1.17.3"
   }
 }
