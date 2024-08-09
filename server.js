@@ -111,12 +111,19 @@ app.get('/url', (req, res) => {
         "url": "",
         "groups": [
             {
-                "name": "ENTRA",
-                "image": "https://telegra.ph/file/033790d0e590f180ed10e.png",
+                "name": "⚽ SPORT LIVE",
+                "image": "https://telegra.ph/file/e7139a495a9f47ebe039d.png",
                 "info": "ENTER",
                 "url": "https://kumadetv.onrender.com/playlist",
                 "import": false
-            }
+            },
+            {
+                "name": "🎬 FILM 🎬",
+                "image": "https://telegra.ph/file/8bdf748bceb1a0d6389a3.png",
+                "info": "ENTER",
+                "url": "https://test34344.herokuapp.com/wise/testWise.php?numList=888&tkn=y3nu1HvznB",
+                "import": false
+            },
         ]
     };
 
@@ -154,7 +161,7 @@ app.post('/playlist', async (req, res) => {
                 }
 
                 groups[title].stations.push({
-                    name: `${event1} - ${event2} | ${time}`,
+                    name: `${event1} - ${event2} - ${time}`,
                     url: link,
                     isHost: "true"
                 });
