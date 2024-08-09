@@ -107,7 +107,7 @@ app.get('/url', (req, res) => {
         "author": "@kumade23",
         "image": "https://telegra.ph/file/033790d0e590f180ed10e.png",
         "info": "",
-        "telegram": "https://t.me/kumade23",
+        "telegram": "kumade23",
         "url": "",
         "groups": [
             {
