@@ -77,11 +77,6 @@ function checkAuth(req, res, next) {
     }
 }
 
-// Endpoint per servire la pagina di login
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 // Endpoint per gestire il login
 app.post('/', (req, res) => {
     const { username, password } = req.body;
@@ -109,10 +104,10 @@ app.get('/playlist', (req, res) => {
 app.get('/url', (req, res) => {
     const staticData = {
         "name": "Kumade TV",
-        "author": "@kumade23",
+        "author": "@Kumade23",
         "image": "https://telegra.ph/file/033790d0e590f180ed10e.png",
-        "info""",
-        "telegram": "kumade23",
+        "info": "",
+        "telegram": "t.me/Kumade23",
         "url": "",
         "groups": [
             {
@@ -171,7 +166,7 @@ app.post('/playlist', async (req, res) => {
 
         const result = {
             name: "Kumade TV",
-            author: "@kumade23",
+            author: "@Kumade23",
             image: "https://telegra.ph/file/033790d0e590f180ed10e.png",
             info: "",
             groups: Object.values(groups)
