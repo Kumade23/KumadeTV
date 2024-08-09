@@ -104,10 +104,10 @@ app.get('/playlist', (req, res) => {
 app.get('/url', (req, res) => {
     const staticData = {
         "name": "Kumade TV",
-        "author": "@Kumade23",
+        "author": "@kumade23",
         "image": "https://telegra.ph/file/033790d0e590f180ed10e.png",
         "info": "",
-        "telegram": "t.me/Kumade23",
+        "telegram": "t.me/kumade23",
         "url": "",
         "groups": [
             {
@@ -166,7 +166,7 @@ app.post('/playlist', async (req, res) => {
 
         const result = {
             name: "Kumade TV",
-            author: "@Kumade23",
+            author: "@kumade23",
             image: "https://telegra.ph/file/033790d0e590f180ed10e.png",
             info: "",
             groups: Object.values(groups)
