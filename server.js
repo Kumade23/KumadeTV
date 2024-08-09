@@ -154,7 +154,7 @@ app.post('/playlist', async (req, res) => {
                 }
 
                 groups[title].stations.push({
-                    name: `${event1} - ${event2} - ${time}`,
+                    name: `${event1} - ${event2} | ${time}`,
                     url: link,
                     isHost: "true"
                 });
