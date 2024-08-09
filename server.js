@@ -31,7 +31,7 @@ function generateImageWithText(text, outputPath) {
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext('2d');
 
-    ctx.fillStyle = '#333';
+    ctx.fillStyle = '#00deff';
     ctx.fillRect(0, 0, width, height);
 
     function calculateFontSize(text, maxWidth, maxHeight) {
@@ -54,7 +54,7 @@ function generateImageWithText(text, outputPath) {
     const fontSize = calculateFontSize(text, width * 0.9, height * 0.9);
 
     ctx.font = `bold ${fontSize}px "Noto Color Emoji"`;
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = '#000';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(text, width / 2, height / 2);
