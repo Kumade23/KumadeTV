@@ -113,17 +113,24 @@ app.get('/url', (req, res) => {
             {
                 "name": "⚽ SPORT LIVE",
                 "image": "https://telegra.ph/file/e7139a495a9f47ebe039d.png",
-                "info": "ENTER",
+                "info": "",
                 "url": "https://kumadetv.onrender.com/playlist",
                 "import": false
             },
             {
                 "name": "🎬 FILM 🎬",
                 "image": "https://telegra.ph/file/8bdf748bceb1a0d6389a3.png",
-                "info": "ENTER",
+                "info": "",
                 "url": "https://test34344.herokuapp.com/wise/testWise.php?numList=888&tkn=y3nu1HvznB",
                 "import": false
             },
+            {
+                "name": "📺 LIVE TV 📺",
+                "image": "https://telegra.ph/file/52c11a1132079be254658.png",
+                "info": "",
+                "url": "https://raw.githubusercontent.com/Tundrak/IPTV-Italia/main/iptvitaplus.m3u",
+                "import": false
+            },            
         ]
     };
 
