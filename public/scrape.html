@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esegui Scraping</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        button {
+            padding: 15px 25px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #statusMessage {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+        #linkContainer {
+            margin-top: 20px;
+        }
+        #copyLink {
+            padding: 10px;
+            font-size: 14px;
+            color: #007bff;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Premi il bottone per aggiornare i dati</h1>
+    <button id="scrapeButton">Esegui Scraping</button>
+    <p id="statusMessage"></p>
+    <div id="linkContainer" style="display: none;">
+        <p>Playlist link:</p>
+        <button id="copyLink">Copia Link</button>
+    </div>
+
+    <script>
+        document.getElementById('scrapeButton').addEventListener('click', async () => {
+            document.getElementById('statusMessage').textContent = 'Esecuzione in corso...';
+            
+            try {
+                const response = await fetch('/playlist', { method: 'POST' });
+
+                if (!response.ok) {
+                    throw new Error('Errore di rete');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('statusMessage').textContent = 'Scraping completato!';
+                    document.getElementById('linkContainer').style.display = 'block';
+                } else {
+                    document.getElementById('statusMessage').textContent = 'Errore durante lo scraping.';
+                }
+            } catch (error) {
+                document.getElementById('statusMessage').textContent = 'Si è verificato un errore. Riprova più tardi.';
+                console.error('Errore:', error);
+            }
+        });
+
+        document.getElementById('copyLink').addEventListener('click', () => {
+            const link = 'https://kumadetv.onrender.com/playlist';
+            navigator.clipboard.writeText(link).then(() => {
+                alert('Link copiato negli appunti!');
+            }).catch(err => {
+                console.error('Errore durante la copia:', err);
+            });
+        });
+    </script>
+</body>
+</html>
