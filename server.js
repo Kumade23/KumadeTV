@@ -5,37 +5,45 @@ const cheerio = require('cheerio');
 const path = require('path');
 const { createCanvas, loadImage, registerFont } = require('canvas');
 const fs = require('fs');
+const session = require('express-session');
 
 const app = express();
-
 let cachedData = [];
 
-app.use(express.static('public'));  // Servire la pagina HTML e lo script JS
+// Configurazione middleware
+app.use(express.json());  // Per analizzare il body delle richieste POST in formato JSON
+app.use(express.static('public'));  // Servire i file statici dalla cartella "public"
+
+// Configurazione delle sessioni
+app.use(session({
+    secret: 'mySecretKey',  // Cambia questa chiave con una chiave segreta sicura
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }  // Cambia a true se usi HTTPS
+}));
 
 // Funzione per generare un'immagine 640x640 con il nome del gruppo
 registerFont(path.join(__dirname, 'public/fonts/NotoColorEmoji-Regular.ttf'), { family: 'Noto Color Emoji' });
 
 function generateImageWithText(text, outputPath) {
-    const width = 640;  // Larghezza dell'immagine
-    const height = 640;  // Altezza dell'immagine
+    const width = 640;
+    const height = 640;
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext('2d');
 
-    // Sfondo semplice
     ctx.fillStyle = '#333';
     ctx.fillRect(0, 0, width, height);
 
-   function calculateFontSize(text, maxWidth, maxHeight) {
-        let fontSize = 50;  // Dimensione iniziale del font
+    function calculateFontSize(text, maxWidth, maxHeight) {
+        let fontSize = 50;
         let textWidth, textHeight;
         ctx.font = `bold ${fontSize}px "Noto Color Emoji"`;
 
         do {
-            // Calcola le dimensioni del testo
             const metrics = ctx.measureText(text);
             textWidth = metrics.width;
-            textHeight = fontSize * 1.2; // Approximate height
-            fontSize -= 1;  // Riduci la dimensione del font
+            textHeight = fontSize * 1.2;
+            fontSize -= 1;
 
             ctx.font = `bold ${fontSize}px "Noto Color Emoji"`;
         } while ((textWidth > maxWidth || textHeight > maxHeight) && fontSize > 0);
@@ -43,21 +51,16 @@ function generateImageWithText(text, outputPath) {
         return fontSize;
     }
 
-    // Calcola la dimensione del font
     const fontSize = calculateFontSize(text, width * 0.9, height * 0.9);
 
-    // Imposta il font e il colore
     ctx.font = `bold ${fontSize}px "Noto Color Emoji"`;
     ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-
-    // Disegna il testo
     ctx.fillText(text, width / 2, height / 2);
 
     const buffer = canvas.toBuffer('image/png');
 
-    // Creare la directory se non esiste
     const dir = path.dirname(outputPath);
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
@@ -66,17 +69,43 @@ function generateImageWithText(text, outputPath) {
     fs.writeFileSync(outputPath, buffer);
 }
 
-// Endpoint per restituire i dati
+// Middleware per verificare l'autenticazione
+function checkAuth(req, res, next) {
+    if (req.session.loggedIn) {
+        next();
+    } else {
+        res.redirect('/');
+    }
+}
+
+// Endpoint per gestire il login
+app.post('/', (req, res) => {
+    const { username, password } = req.body;
+
+    // Verifica delle credenziali (qui è hardcoded per semplicità)
+    if (username === 'admin' && password === 'password123') {
+        req.session.loggedIn = true;
+        return res.json({ success: true });
+    } else {
+        return res.json({ success: false });
+    }
+});
+
+// Servire la pagina principale dopo il login
+app.get('/scrape', checkAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'scrape.html'));
+});
+
+// Endpoint per restituire i dati (potrebbe essere utilizzato in futuro per mostrare i dati nella pagina principale)
 app.get('/playlist', (req, res) => {
     res.json(cachedData);
 });
 
-// Endpoint per aggiornare i dati con una richiesta POST
+// Endpoint per aggiornare i dati tramite scraping
 app.post('/playlist', async (req, res) => {
     try {
         const response = await axios.get('https://sub7goal.live/');
         const htmlContent = response.data;
-
         const $ = cheerio.load(htmlContent);
         const link = $('a[href^="https://anonpaste.pw/v/"]').attr('href');
 
@@ -102,7 +131,7 @@ app.post('/playlist', async (req, res) => {
             const lines = section.split('\n').map(line => line.trim()).filter(line => line.length > 0);
 
             if (lines.length >= 3) {
-                const groupName = lines[0];  // Usa la prima riga come nome del gruppo
+                const groupName = lines[0];
                 const time = lines[1];
 
                 const stations = [];
@@ -149,6 +178,17 @@ app.post('/playlist', async (req, res) => {
     }
 });
 
+// Endpoint per il logout
+app.post('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).json({ error: 'Errore nel logout' });
+        }
+        res.redirect('/');
+    });
+});
+
+// Avviare il server
 app.listen(3000, () => {
     console.log('Server avviato su http://localhost:3000');
 });
